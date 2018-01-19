@@ -4,18 +4,19 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://oshiire-dev-ed.my.salesforce.com/lightning/lightning.out.js"></script>
-    <script type="text/javascript">
-      $Lightning.use("c:LtngOut",
-      function() {
-          $Lightning.createComponent("c:Test01", {}, "lightning");
-      }, "<%- settings.instance_url %>", "<%- settings.access_token %>");
-    </script>
   </head>
 
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <div id="ltng" data-url="<%- settings.instance_url %>" data-token="<%- settings.access_token %>" ></div>
     <div id="lightning"></div>
-
+    <script type="text/javascript">
+      var ltng = document.getElementById("ltng");
+      $Lightning.use("c:LtngOut",
+      function() {
+          $Lightning.createComponent("c:Test01", {}, "lightning");
+      }, ltng.dataset.url, ltng.dataset.token);
+    </script>
   </body>
 </html>
