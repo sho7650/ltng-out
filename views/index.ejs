@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://oshiire-dev-ed.my.salesforce.com/lightning/lightning.out.js"></script>
+    <script src="/javascripts/script.js"></script>
+  </head>
+  <body onload="init();">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <div id="lightning"></div>
+    <p id='url'><%- settings.instance_url %></p>
+    <p id='token'><%- settings.access_token %></p>
+  </body>
+</html>
