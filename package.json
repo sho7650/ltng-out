@@ -19,5 +19,8 @@
     "jsforce": "^1.8.0",
     "jsonwebtoken": "^8.1.0",
     "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
   }
 }

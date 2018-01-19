@@ -1,19 +1,18 @@
-var jwt = require('jsonwebtoken');
-var request = require('request');
-var jsforce = require('jsforce');
+'use strict'
+
+const jwt = require('jsonwebtoken');
+const request = require('request');
+const jsforce = require('jsforce');
 
 // JWT setup
-var TOKEN_ENDPOINT_URL = process.env.TOKEN_ENDPOINT_URL;
-var ISSUER = process.env.ISSUER;
-var AUDIENCE = 'https://login.salesforce.com'; // 固定
+const TOKEN_ENDPOINT_URL = process.env.TOKEN_ENDPOINT_URL;
+const ISSUER = process.env.ISSUER;
+const AUDIENCE = 'https://login.salesforce.com'; // 固定
 
-var cert = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
-
-var access_token;
-var instance_url;
+const cert = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
 
 // JWTに記載されるメッセージの内容
-var claim = {
+const claim = {
     iss: ISSUER,
     aud: AUDIENCE,
     sub: process.env.SALESFORCE_USER, // 接続するSalesforceのユーザアカウント名
@@ -21,7 +20,7 @@ var claim = {
 };
 
 // JWTの生成と署名
-var token = jwt.sign(claim, cert, { algorithm: 'RS256' });
+const token = jwt.sign(claim, cert, { algorithm: 'RS256' });
 
 exports.authenticate = function (callback) {
     request({
@@ -35,11 +34,11 @@ exports.authenticate = function (callback) {
         if (err) {
             return console.error("request エラー" + err);
         }
-        var ret = JSON.parse(body);
-        var url = ret.instance_url.replace("my.salesforce", "lightning.force");
+        const ret = JSON.parse(body);
+        const url = ret.instance_url.replace("my.salesforce", "lightning.force");
         callback(ret.access_token, url);
 
-        var conn = new jsforce.Connection({
+        const conn = new jsforce.Connection({
             accessToken: ret.access_token,
             instanceUrl: ret.instance_url
         });
