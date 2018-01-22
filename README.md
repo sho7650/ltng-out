@@ -97,14 +97,77 @@ Lightning 設定画面からは「設定」→「セキュリティ」→「CORS
 
 ![CORS](https://user-images.githubusercontent.com/2649428/35207646-8b751dc6-ff87-11e7-9a74-ec77fc99978e.png)
 
+## 外部へ公開する Lightning Application および Lightning Component の設定
+
+外部に公開したい Lightning コンポーネントの `コンポーネント名` を準備してください。すでに開発済みでも、これから作成するでも、どちらでも構いませんが、固有の Lightning コンポーネントを示す `c:xxxxxx` というコンポーネント名が必要です。
+
+次に、このコンポーネントを外部へ公開するための Lightning アプリケーションを作成します。`開発者コンソール` を開きます。
+
+`開発者コンソール`で「File」→「New」→「Lightning Application」をクリックしましょう。必須項目は一つだけです。
+
+- Name : 外部からアクセスするときのアプリケーション名になります
+- Lightning Out Dependency App : ここにチェックを付けておくと、Lightning Out に必要な設定を付けてくれます
+
+![新規Lightning Application](https://user-images.githubusercontent.com/2649428/35207953-06e81a0c-ff89-11e7-97f5-487f09b26f69.png)
+
+チェックを付けてもつけなくても、たいした設定ではないのでお好きにどうぞ。
+
+必要なものは次の3行だけです。必要な箇所だけ説明します。
+
+```
+<aura:application access="GLOBAL" extends="ltng:outApp" >
+    <aura:dependency resource="c:Test01" />
+</aura:application>
+```
+
+- extends : 先程のチェックを入れておくと自動的に入れてくれる箇所です。`ltng:outApp` を指定すると、そのアプリケーションは `Salesforce Lightning Design System`(SLDS) のスタイルが設定されます。SLDS を使わず、外部Webアプリケーションのスタイルに連動させる場合には `ltng:outAppUnstyled` と指定します
+- resource : ここに、外部で実行させたい Lightning コンポーネントを指定します
+
+Heroku アプリケーションを設定する際に、ここで作成した `Lightningアプリケーション名` と、実行させる `Lightning コンポーネント名` が必要になります。
+
 # Heroku アプリケーションの導入
 
 下の `Herokuボタン` をクリックすれば、さっさと導入が可能です。ここで、入力すべき環境変数について説明します。
 
-- TOKEN\_ENDPOINT\_URL :
+- TOKEN\_ENDPOINT\_URL : 設定した個別のドメイン名 + `/services/oauth2/token` です。わからなかったら、 `https://login.salesforce.com/services/oauth2/token` にしておけば、大抵の人はOKです。「私のドメイン」を設定して、かつ「login.salesforce.comからのアクセス」を「禁止」にしている場合は、正しいドメイン名の設定が必要です。
+- ISSUER : 作成した「接続アプリケーション」を参照すると出てくる `コンシューマ鍵` を指定します
+- SALESFORCE\_USER : 接続する Salesforce ユーザ名を指定します
+- LIGHTNING\_APP : 作成した `Lightningアプリケーション名` を指定します。たいてい `c:xxxxxx` みたいな名前です
+- LIGHTNING\_COMPONENT : 外部実行させる `Lightningコンポーネント名` を指定します。これも、たいてい `c:xxxxxx` となっています
+- PRIVATE\_KEY : だいぶ前に作成した「秘密鍵」の内容をここに記します。厄介なので、個別に説明します
 
+これらをすべて入力して、`Deploy app` ボタンをクリックすれば、Heroku へアプリケーションをデプロイできます。
 
+## 環境変数 `PRIVATE\_KEY` の設定について
 
+ここで入力すべきは、SSL の秘密鍵の内容です。手順通りに作成した場合は「myapp.pem」となっています。このファイルの中身を見ていただくとわかりますが、複数の行から成り立っています。環境変数は 1行で設定しなければなりませんから、このままでは設定できません。
+
+したがって、複数行となっているものを、1行にして改行のあった部分を改行であった痕跡を残して置かなければなりません。JWT のライブラリ側の使用で、秘密鍵の内容が、そのようになっていないとならないからです。次の日本語の意味が理解できて、それをなすことができる方は、それを実行してください。わからない方は、その先へ進んでください。
+
+```
+「myapp.pem の改行を '\n' へ変換して、すべて 1行にする」
+```
+
+### 変換ツールの話
+
+先程の処理をおこなうためのスキルと能力が足りない方は、この git リポジトリから [bin/pem2env.sh](https://github.com/tabesfdc/ltng-out/blob/master/bin/pem2env.sh) を取得してください。Linux/Mac でうごきます。Windows の人はごめんなさい。bash on Linux on Windows をお試しください。
+
+おもむろに、次のコマンドを打つと、環境変数へ入れるべきものが表示されます。
+
+```
+$ ./pem2env.sh myapp.pem
+PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQE(中略)uS4kRQ=\n-----END RSA PRIVATE KEY-----
+```
+
+環境変数へコピペしたい場合は、`PRIVATE\_KEY=` よりあとの '-----BEGIN' から最後の 'PRIVATE KEY-----'をコピペしてください。
+
+もし、heroku コマンド使えるよという方であれば、多分、次のコマンドを実行すれば動くはずです(試してない)。
+
+```
+$ heroku config:set `./pem2env.sh myapp.pem`
+```
+
+Heroku の Deployが完了したら、Heroku アプリの URL を [CORS](https://github.com/tabesfdc/ltng-out#iii-cors-%E3%81%AE%E8%A8%AD%E5%AE%9A) へ設定すれば、全て完了です。Heroku アプリへアクセスすると、指定した Lightning コンポーネントが表示されるはずです。
 
 If you install this application then you should click this Heroku deploy button.
 
