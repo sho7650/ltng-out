@@ -8,9 +8,6 @@
     ],
     "repository": "https://github.com/tabesfdc/ltng-out",
     "success_url": "/",
-    "scripts": {
-      "postdeploy": "npm start"
-    },
     "env": {
       "SALESFORCE_USER": {
         "description": "The user of Salesforce username",

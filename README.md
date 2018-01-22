@@ -5,4 +5,5 @@ Lightning Out をつかって、Heroku 上で Salesforce内で稼働する Light
 ## Heroku button
 
 If you install this application then you should click this Heroku deploy button.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
