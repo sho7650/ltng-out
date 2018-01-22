@@ -1,0 +1,33 @@
+{
+    "name": "Testing Lightning Out",
+    "description": "This app is a test of Lightning Out function for Salesforce Lightning",
+    "keywords": [
+      "demo",
+      "javascript",
+      "lightning"
+    ],
+    "repository": "https://github.com/tabesfdc/ltng-out",
+    "success_url": "/",
+    "scripts": {
+      "postdeploy": "npm start"
+    },
+    "env": {
+      "SALESFORCE_USER": {
+        "description": "The user of Salesforce username",
+        "value": ""
+      },
+      "TOKEN_ENDPOINT_URL": {
+        "description": "The URL of Salesforce OAuth2.0's URL",
+        "value": ""
+      },
+      "ISSUER": {
+        "description": "The Secret Key of Salesforce connecting apps secret key.",
+        "value": ""
+      },
+      "PRIVATE_KEY": {
+        "description": "The key of connecting SSL's primary key for Salesforce connecting apps. Replace the return code to '\n'. ",
+        "value": ""
+      }
+    },
+    "image": "heroku/nodejs"
+  }
