@@ -2,7 +2,6 @@
 
 const jwt = require('jsonwebtoken');
 const request = require('request');
-const jsforce = require('jsforce');
 
 // JWT setup
 const TOKEN_ENDPOINT_URL = process.env.TOKEN_ENDPOINT_URL;
@@ -38,10 +37,5 @@ exports.authenticate = function(callback) {
         const ret = JSON.parse(body);
         const url = ret.instance_url.replace('my.salesforce', 'lightning.force');
         callback(ret.access_token, url);
-
-        const conn = new jsforce.Connection({
-            accessToken: ret.access_token,
-            instanceUrl: ret.instance_url,
-        });
     });
 };

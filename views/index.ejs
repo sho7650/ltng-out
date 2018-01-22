@@ -9,13 +9,13 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <div id="ltng" data-url="<%- settings.instance_url %>" data-token="<%- settings.access_token %>" ></div>
+    <div id="ltng" data-url="<%- settings.instance_url %>" data-token="<%- settings.access_token %>" data-app="<%- process.env.LIGHTNING_APP %>" data-component="<%- process.env.LIGHTNING_COMPONENT %>" ></div>
     <div id="lightning"></div>
     <script type="text/javascript">
       var ltng = document.getElementById("ltng");
-      $Lightning.use("c:LtngOut",
+      $Lightning.use(ltng.dataset.app,
       function() {
-          $Lightning.createComponent("c:Test01", {}, "lightning");
+          $Lightning.createComponent(ltng.dataset.component, {}, "lightning");
       }, ltng.dataset.url, ltng.dataset.token);
     </script>
   </body>

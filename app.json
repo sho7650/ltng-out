@@ -24,6 +24,14 @@
       "PRIVATE_KEY": {
         "description": "The key of connecting SSL's primary key for Salesforce connecting apps. Replace the return code to '\n'. ",
         "value": ""
+      },
+      "LIGHTNING_APP": {
+        "description": "The app's name of executing lightning application for external. ",
+        "value": ""
+      },
+      "LIGHTNING_COMPONENT": {
+        "description": "The component's name of executing lightning component. ",
+        "value": ""
       }
     },
     "image": "heroku/nodejs"
