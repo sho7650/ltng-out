@@ -60,16 +60,51 @@ A challenge password []:
 An optional company name []:
 $ openssl x509 -req -days 365 -in myapp.csr -signkey myapp.pem -out myapp.crt 
 Signature ok
-subject=/C=JP/ST=Tokyo/L=Chiyoda/O=salesforce.com Co.,Ltd./OU=Sales Engineering/CN=xxxx.example.com/emailAddress=xxxx@example.com
+subject=/C=JP/ST=Tokyo/L=Chiyoda/O=salesforce.com Co.,Ltd./OU=Sales Engineering/CN=xxx.example.com/emailAddress=xxxx@example.com
 Getting Private key
 ```
 
 ### ii) 接続アプリケーションの設定
 
+次に、Salesforce の接続アプリケーションを設定します。Lightning であれば、「設定」→「アプリケーション」→「アプリケーションマネージャ」から「新規接続アプリケーション」で作成ください。サンプル例の画面とともに、最低限設定の必要な項目を紹介します。
+
+- 接続アプリケーション名 : 好きな名前をつけてください。組織内でユニークであれば、なんでもいいです
+- API参照名 : 今回特に利用しませんが、こちらも組織内でユニークな名前をつけてください。いずれも、あとで判別がつきやすいものを推奨します
+- OAuth設定の有効化 : ここにチェックを付けないと何も始まりません。必ずチェックください
+- コールバックURL : JWTの場合は特に使わないので、適当に。ただし`https`であることが必要です。困ったら 「https://login.salesforce.com/services/oauth2/success」にすれば、現時点では問題ありません
+- デジタル署名を使用 : JWT の時はこれが必要です。先程作った SSLの公開鍵を選択してください。先程通りに作ったのならば「myapp.crt」を選択すれば良いです
+- 選択した OAuth 範囲 : 次の２つがあれば基本原則問題ないです。「フルアクセス(full)」「ユーザに代わっていつでも要求を実行(refresh\_token,offline\_access)」月に代わっておしおきじゃないです。
+
 ![Salesforce 設定画面](https://user-images.githubusercontent.com/2649428/35206714-f30d709c-ff81-11e7-9af5-d0aab9fe0c1a.png)
 
+この接続アプリケーションを保存しておいてください。保管したら、この接続アプリケーションの「Manage」から、更に設定が必要です。管理画面が開いたら「編集」をクリックしてくださいませ。
 
-# Heroku button
+ここの「OAuthポリシー」内の「許可されているユーザ」を`管理者が承認したユーザは事前承認済み`に変更して「保存」します。
+
+![Salesforce OAuth ポリシー](https://user-images.githubusercontent.com/2649428/35207430-55546900-ff86-11e7-9e8f-e295fb712c7e.png)
+
+「接続アプリケーションの詳細」画面に戻ってきますので、少し下へいって、「プロファイル」から `プロファイルを管理する` をクリックしてどうぞ。今回、アクセスする予定のユーザが登録されているプロファイルをここで追加してあげます。
+
+![Salesforce プロファイル](https://user-images.githubusercontent.com/2649428/35207541-ea435ab2-ff86-11e7-8833-3b0afa29d467.png)
+
+### iii) CORS の設定
+
+接続関係では最後。CORS に、外部WebアプリケーションのURLを登録します。
+
+Lightning 設定画面からは「設定」→「セキュリティ」→「CORS」から、URLを追加します。今回登録する外部WebアプリケーションのURLを、ホスト名まで入力します。ディレクトリ部分となるURIは入力不要です。また、文字列の一番最後の `/` も不要です。ホスト名までです。
+
+ここで、`http://localhost:3000` とローカルホストを指定することもできます。推奨はしませんが、ローカルでのテストを実施する場合には、このような設定も可能です。Heroku のアプリケーションの場合、「https://xxxxxxx.herokuapp.com」という指定になります。まだ、ここでは Heroku アプリケーションを作成していないので、Heroku アプリケーションを適用してから、ここを設定することが確実です。
+
+![CORS](https://user-images.githubusercontent.com/2649428/35207646-8b751dc6-ff87-11e7-9a74-ec77fc99978e.png)
+
+# Heroku アプリケーションの導入
+
+下の `Herokuボタン` をクリックすれば、さっさと導入が可能です。ここで、入力すべき環境変数について説明します。
+
+- TOKEN\_ENDPOINT\_URL :
+
+
+
 
 If you install this application then you should click this Heroku deploy button.
 
